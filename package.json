@@ -1,9 +1,9 @@
 {
   "name": "anki-apkg",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "lib/index.js",
   "types": "lib/typings.d.ts",
-  "repository": "git@github.com:NdYAG/anki-apkg.git",
+  "repository": "git@github.com:voising/anki-apkg.git",
   "author": "NdYAG <i@daix.me>",
   "license": "MIT",
   "scripts": {

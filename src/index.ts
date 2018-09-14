@@ -9,12 +9,13 @@ export class APKG {
   private db: any
   private deck: DeckConfig
   private dest: string
-  constructor(private config: DeckConfig) {
-    this.dest = join(__dirname, config.name)
+  private media: any
+  constructor(private config: DeckConfig, destination: string) {
+    this.dest = join(destination, config.name)
+    this.media = [];
     this.clean()
     mkdirSync(this.dest)
-    writeFileSync(join(this.dest, 'media'), '{}')
-    this.db = new Database(join(this.dest, 'collection.anki2'))
+    this.db = new Database(join(this.dest, 'collection.anki2'), {mode: 0o755})
     this.deck = {
       ...config,
       id: +new Date()
@@ -24,15 +25,28 @@ export class APKG {
   addCard(card: Card) {
     insertCard(this.db, this.deck, card)
   }
+  afterFinish() {
+    this.clean()
+  }
   save(destination: string) {
-    const directory = join(__dirname, this.config.name)
+    const directory = join(destination, this.config.name)
     const archive = archiver('zip')
+
+    var mediaObj = this.media.reduce(function (prev, curr, idx) {
+      prev[idx] = curr.filename;
+      return prev;
+    }, {});
+
+    this.media.forEach((item, i) => {
+      writeFileSync(join(this.dest, i+''), item.data, {mode: 0o755});
+    });
+    writeFileSync(join(this.dest, 'media'), JSON.stringify(mediaObj), {mode: 0o755});
+
+    var output = createWriteStream(join(destination, `${this.config.name}.apkg`));
+    output.on('close', this.afterFinish.bind(this));
     archive.directory(directory, false)
-    archive.pipe(
-      createWriteStream(join(destination, `${this.config.name}.apkg`))
-    )
+    archive.pipe(output)
     archive.finalize()
-    archive.on('end', this.clean.bind(this))
   }
   private clean() {
     rimraf(this.dest, () => {})

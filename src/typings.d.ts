@@ -1,6 +1,7 @@
 interface DeckConfig {
   id?: number
   name: string
+  filename: string
   card: {
     fields: Array<string>
     template: {

@@ -1,9 +1,5 @@
 {
   "compilerOptions": {
-    "module": "es6",
-    "target": "es6",
-    "removeComments": true,
-    "moduleResolution": "node",
-    "sourceMap": true
+    "module": "commonjs"
   }
 }

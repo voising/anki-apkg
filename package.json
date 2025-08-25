@@ -15,8 +15,7 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run build",
-    "prepublishOnly": "npm run build",
-    "prepare": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@types/node": "^9.4.6",

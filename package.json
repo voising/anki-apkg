@@ -2,13 +2,21 @@
   "name": "anki-apkg",
   "version": "0.0.6",
   "main": "lib/index.js",
-  "types": "lib/typings.d.ts",
+  "types": "lib/index.d.ts",
   "repository": "git@github.com:voising/anki-apkg.git",
   "author": "NdYAG <i@daix.me>",
   "license": "MIT",
+  "files": [
+    "lib/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "start": "tsc --outDir lib src/*.ts && cp src/typings.d.ts lib",
-    "prepublish": "npm run start"
+    "build": "tsc",
+    "start": "npm run build",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@types/node": "^9.4.6",
@@ -16,5 +24,8 @@
     "better-sqlite3": "^7.1.1",
     "rimraf": "^2.6.2",
     "sha1": "^1.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }

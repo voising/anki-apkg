@@ -2,6 +2,7 @@ const { APKG } = require('../')
 
 const apkg = new APKG({
     name: 'VocabularyBuilder',
+    filename: 'VocabularyBuilder',
     card: {
         fields: ['word', 'meaning', 'usage'],
         template: {
@@ -12,7 +13,7 @@ const apkg = new APKG({
   <div class="usage">{{usage}}</div>`
         }
     }
-})
+}, __dirname)
 apkg.addCard({
     content: ['sample word', 'sample meaning', 'sample usage']
 })

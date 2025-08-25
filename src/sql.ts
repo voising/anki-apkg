@@ -1,6 +1,6 @@
 // Reference:
 // https://github.com/ankidroid/Anki-Android/wiki/Database-Structure
-import * as sha1 from 'sha1'
+const sha1 = require('sha1')
 
 export function initDatabase(database: any, config: DeckConfig) {
   const current = config.id

@@ -1,9 +1,9 @@
-import * as Database from 'better-sqlite3'
-import { join } from 'path'
-import { initDatabase, insertCard } from './sql'
-import { writeFileSync, mkdirSync, rmdirSync, createWriteStream } from 'fs'
-import * as rimraf from 'rimraf'
-import * as archiver from 'archiver'
+const Database = require('better-sqlite3')
+const { join } = require('path')
+const { initDatabase, insertCard } = require('./sql')
+const { writeFileSync, mkdirSync, rmdirSync, createWriteStream } = require('fs')
+const rimraf = require('rimraf')
+const archiver = require('archiver')
 
 export class APKG {
   private db: any

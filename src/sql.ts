@@ -101,21 +101,6 @@ CREATE TABLE IF NOT EXISTS col (
 	tags	text NOT NULL,
 	PRIMARY KEY(id)
 );
-INSERT INTO col VALUES (
-  1,
-  1401912000,
-  ${current},
-  ${current},
-  11,
-  0,
-  0,
-  0,
-  '${JSON.stringify(conf)}',
-  '${JSON.stringify(models)}',
-  '${JSON.stringify(decks)}',
-  '${JSON.stringify(decksConfig)}',
-  '{}'
-);
 CREATE TABLE IF NOT EXISTS cards (
 	id	integer,
 	nid	integer NOT NULL,
@@ -194,6 +179,22 @@ CREATE INDEX IF NOT EXISTS ix_cards_nid ON cards (
 COMMIT;
 `
   database.exec(sql)
+
+  // Bound, never interpolated: conf/models/decks carry user-supplied text (the
+  // deck name, card templates, css). Inlining them into the SQL above let a
+  // single apostrophe in a deck name close the string literal and abort the
+  // whole build with `near "...": syntax error`.
+  const SQL_COL = `INSERT INTO col VALUES (1, 1401912000, ?, ?, 11, 0, 0, 0, ?, ?, ?, ?, '{}')`
+  database
+    .prepare(SQL_COL)
+    .run(
+      current,
+      current,
+      JSON.stringify(conf),
+      JSON.stringify(models),
+      JSON.stringify(decks),
+      JSON.stringify(decksConfig)
+    )
 }
 
 export function insertCard(database: any, deck: DeckConfig, card: Card) {

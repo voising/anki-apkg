@@ -48,7 +48,11 @@ export class APKG {
     archive.pipe(output)
     archive.finalize()
   }
+  // Must be synchronous: the constructor calls this immediately before
+  // mkdirSync(this.dest). Async rimraf issues its lstat on the libuv threadpool,
+  // which can land *after* the mkdir and delete the directory the build is
+  // about to write into (-> ENOENT on save()).
   private clean() {
-    rimraf(this.dest, () => {})
+    rimraf.sync(this.dest)
   }
 }

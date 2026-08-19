@@ -63,7 +63,29 @@ export function initDatabase(database: any, config: DeckConfig) {
       mod: +new Date()
     }
   }
+  // Every deck references a deck-config group (`conf`), and `col.conf` points at
+  // the Default deck/model (id 1). Both must actually exist in `col.decks` /
+  // `col.dconf`: Anki's Rust importer (2.1.50+) validates them and aborts the
+  // whole import with "Your database appears to be in an inconsistent state …
+  // No such deck config: '1'". Older clients silently repaired it instead.
+  const defaultDeck = {
+    name: 'Default',
+    extendRev: 50,
+    usn: 0,
+    collapsed: false,
+    newToday: [0, 0],
+    timeToday: [0, 0],
+    dyn: 0,
+    extendNew: 10,
+    conf: 1,
+    revToday: [0, 0],
+    lrnToday: [0, 0],
+    id: 1,
+    mod: 0,
+    desc: ''
+  }
   let decks = {
+    1: defaultDeck,
     [deckId]: {
       mid: modelId, // model id
       name: config.name,
@@ -82,7 +104,44 @@ export function initDatabase(database: any, config: DeckConfig) {
       desc: ''
     }
   }
-  let decksConfig = {}
+  let decksConfig = {
+    1: {
+      id: 1,
+      name: 'Default',
+      mod: 0,
+      usn: 0,
+      maxTaken: 60,
+      autoplay: true,
+      timer: 0,
+      replayq: true,
+      dyn: 0,
+      new: {
+        bury: true,
+        delays: [1, 10],
+        initialFactor: 2500,
+        ints: [1, 4, 7],
+        order: 1,
+        perDay: 20,
+        separate: true
+      },
+      rev: {
+        bury: true,
+        ease4: 1.3,
+        fuzz: 0.05,
+        ivlFct: 1,
+        maxIvl: 36500,
+        minSpace: 1,
+        perDay: 100
+      },
+      lapse: {
+        delays: [10],
+        leechAction: 0,
+        leechFails: 8,
+        minInt: 1,
+        mult: 0
+      }
+    }
+  }
   let sql = `
 BEGIN TRANSACTION;
 CREATE TABLE IF NOT EXISTS col (
